@@ -7,7 +7,7 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-clean_data = pd.read_csv("clean_data.csv")
+clean_data = pd.read_csv("data/clean_data.csv")
 continuous_vars = ['carat', 'length', 'width', 'height', 'depth', 'table', 'price']
 categorical_vars = ['cut', 'color', 'clarity']
 
@@ -37,6 +37,12 @@ def regression_plot(y, y_pred):
 # Page Title
 st.title("Diamond data analysis")
 
+# Author:
+st.header("Author: Mikołaj Szkaradek")
+
+
+st.header("Data")
+
 # Show data
 st.write(clean_data)
 
@@ -57,8 +63,8 @@ plot_histplot(clean_data, col)
 
 # Model
 
-X = pd.read_csv("model_train_data.csv")
-y = pd.read_csv("model_expected_data.csv")
+X = pd.read_csv("data/model_train_data.csv")
+y = pd.read_csv("data/model_expected_data.csv")
 y = y['price']
 
 model = joblib.load("model.joblib")
