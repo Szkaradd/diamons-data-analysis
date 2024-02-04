@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 clean_data = pd.read_csv("data/clean_data.csv")
+clean_data_no_missing_values = pd.read_csv("data/clean_data_no_missing_values.csv")
 continuous_vars = ['carat', 'length', 'width', 'height', 'depth', 'table', 'price']
 categorical_vars = ['cut', 'color', 'clarity']
 
@@ -33,6 +34,11 @@ def regression_plot(y, y_pred):
     plt.plot([min(y), max(y)], [min(y_pred), max(y_pred)], color='red')
     st.pyplot(fig)
     
+def plot_scatterplot(data, col):
+    plt.figure(figsize=(10, 4))
+    sns.scatterplot(x=col, y='price', data=data)
+    plt.title(f'Scatterplot of price and {col}')
+    st.pyplot(plt)
 
 # Page Title
 st.title("Diamond data analysis")
@@ -45,6 +51,11 @@ st.header("Data")
 
 # Show data
 st.write(clean_data)
+clean_data = clean_data[(clean_data['price'] > clean_data['price'].quantile(0.05)) & (clean_data['price'] < clean_data['price'].quantile(0.95))]
+
+# Show data with missing values replaced by the mean value of the column
+st.write("Data with missing values replaced by the mean value of the column")
+st.write(clean_data_no_missing_values)
 
 st.header("Diamonds by category")
 category = st.selectbox("Select a category", categorical_vars)
@@ -61,6 +72,12 @@ st.header("Continuous variables distribution")
 col = st.selectbox("Select a variable", continuous_vars)
 plot_histplot(clean_data, col)
 
+# Price dependence on continuous variables
+st.header("Price dependence on continuous variables")
+col = st.selectbox("Select a continuous variable", continuous_vars[:-1])
+
+plot_scatterplot(clean_data, col)
+
 # Model
 
 X = pd.read_csv("data/model_train_data.csv")
@@ -72,6 +89,9 @@ model = joblib.load("model.joblib")
 # Plot linear regression of encoded data
 
 st.header("Linear regression of encoded data")
+
+st.write("The model is working on data with missing values replaced by the mean value of the column")
+st.write("The model is working on encoded data with categorical variables replaced by numerical values")
 
 y_pred = model.predict(X)
 
